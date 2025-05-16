@@ -33,4 +33,33 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  // Load stories on homepage
+  const feed = document.getElementById("story-feed");
+  if (feed) {
+    loadStories(feed);
+  }
+
+  async function loadStories(feed) {
+    const { data, error } = await client
+      .from("submissions")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error loading stories:", error);
+      return;
+    }
+
+    if (data.length === 0) {
+      feed.innerHTML += `<p class="tagline">No stories yet. Be the first to share.</p>`;
+    } else {
+      data.forEach((entry) => {
+        const div = document.createElement("div");
+        div.className = "content-box";
+        div.textContent = entry.text;
+        feed.appendChild(div);
+      });
+    }
+  }
 });
