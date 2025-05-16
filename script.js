@@ -1,12 +1,14 @@
 const SUPABASE_URL = "https://pzijwvijruzjgmoekjlx.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6aWp3dmlqcnV6amdtb2Vramx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTY2ODUsImV4cCI6MjA2Mjk5MjY4NX0.cJzlLk44FQPaymfmtorU4sju_53W-TPIvHHSWUZK3PI";
 
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("submissionForm");
   const response = document.getElementById("response");
 
+  // Handle form submission
   if (form) {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -17,7 +19,11 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      const { error } = await supabase.from("submissions").insert([{ text: storyText }]);
+      console.log("Submitting:", storyText); // Optional: debug in console
+
+      const { error } = await supabase.from("submissions").insert([
+        { text: storyText }
+      ]);
 
       if (error) {
         console.error("Error submitting:", error);
@@ -29,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Load and display stories on the homepage
   const feed = document.getElementById("story-feed");
   if (feed) {
     loadStories(feed);
