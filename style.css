@@ -166,28 +166,3 @@ input[type="file"] {
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-/* Hide the default file input button */
-input[type="file"] {
-  display: none; /* This hides the default file input button */
-}
-
-/* Create a custom styled button for file input */
-input[type="file"] + label {
-  display: inline-block;
-  background-color: #111; /* Black color */
-  color: #fff;
-  padding: 12px 24px;
-  border-radius: 6px;
-  cursor: pointer;
-  text-align: center;
-  font-size: 16px;
-}
-
-input[type="file"]:hover + label {
-  background-color: #444; /* Darker shade on hover */
-}
-
-input[type="file"]:focus + label {
-  outline: none;
-}
-
