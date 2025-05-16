@@ -32,6 +32,17 @@
 </section>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="script.js" defer></script>
+<form id="submissionForm">
+  <textarea id="story" placeholder="Write something real..." required></textarea>
+  
+  <!-- File input -->
+  <input type="file" id="image" accept="image/*" />
+  
+  <!-- Custom label for file input -->
+  <label for="image">Choose File</label>
+  
+  <button type="submit" class="cta-btn">Submit Anonymously</button>
+</form>
 
 
 </body>
