@@ -7,19 +7,17 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
- <div class="social-links">
-  <a href="https://www.instagram.com/yourhandle" target="_blank" aria-label="Instagram">
-    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" />
-  </a>
-  <a href="https://www.tiktok.com/@yourhandle" target="_blank" aria-label="TikTok">
-    <img src="https://cdn-icons-png.flaticon.com/512/3046/3046125.png" alt="TikTok" />
-  </a>
-  <a href="https://yourstorelink.com" target="_blank" aria-label="Store">
-  <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Store" />
-</a>
-
-</div>
-
+  <div class="social-links">
+    <a href="https://www.instagram.com/yourhandle" target="_blank" aria-label="Instagram">
+      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" />
+    </a>
+    <a href="https://www.tiktok.com/@yourhandle" target="_blank" aria-label="TikTok">
+      <img src="https://cdn-icons-png.flaticon.com/512/3046/3046125.png" alt="TikTok" />
+    </a>
+    <a href="https://yourstorelink.com" target="_blank" aria-label="Store">
+      <img src="https://cdn-icons-png.flaticon.com/512/1170/1170678.png" alt="Store" />
+    </a>
+  </div>
 
   <main class="hero">
     <h1 class="logo-title">GREYLIT</h1>
@@ -27,23 +25,15 @@
     <p class="tagline">A curated archive of anonymous truths.</p>
     <a href="submit.html" class="cta-btn">SUBMIT A STORY</a>
   </main>
-  <section id="story-feed" class="feed-container">
-  <h2 class="subhead">Anonymous Submissions</h2>
-</section>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="script.js" defer></script>
-<form id="submissionForm">
-  <textarea id="story" placeholder="Write something real..." required></textarea>
-  
-  <!-- File input -->
-  <input type="file" id="image" accept="image/*" />
-  
-  <!-- Custom label for file input -->
-  <label for="image">Choose File</label>
-  
-  <button type="submit" class="cta-btn">Submit Anonymously</button>
-</form>
 
+  <!-- Feed Section for Anonymous Submissions -->
+  <section id="story-feed" class="feed-container">
+    <h2 class="subhead">Anonymous Submissions</h2>
+    <!-- Content will be dynamically loaded here -->
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="script.js" defer></script>
 
 </body>
 </html>
