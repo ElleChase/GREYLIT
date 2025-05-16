@@ -1,10 +1,15 @@
+const SUPABASE_URL = "https://pzijwvijruzjgmoekjlx.supabase.co";
+const SUPABASE_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6aWp3dmlqcnV6amdtb2Vramx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTY2ODUsImV4cCI6MjA2Mjk5MjY4NX0.cJzlLk44FQPaymfmtorU4sju_53W-TPIvHHSWUZK3PI";
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Handle submission
   const form = document.getElementById("submissionForm");
   const response = document.getElementById("response");
 
   if (form) {
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const storyText = document.getElementById("story").value.trim();
 
@@ -13,67 +18,39 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Save to localStorage
-      const submissions = JSON.parse(localStorage.getItem("greylit_stories") || "[]");
-      submissions.push({ text: storyText, date: new Date().toISOString() });
-      localStorage.setItem("greylit_stories", JSON.stringify(submissions));
+      const { error } = await supabase.from("submissions").insert([{ text: storyText }]);
 
-      // Show confirmation
-      response.textContent = "Submitted. Thank you for your truth.";
-
-      form.reset();
+      if (error) {
+        console.error("Error submitting:", error);
+        response.textContent = "Something went wrong. Try again.";
+      } else {
+        response.textContent = "Submitted. Thank you for your truth.";
+        form.reset();
+      }
     });
   }
 
-  // On homepage: display submissions
   const feed = document.getElementById("story-feed");
   if (feed) {
-    const submissions = JSON.parse(localStorage.getItem("greylit_stories") || "[]").reverse();
-    submissions.forEach((s) => {
+    loadStories(feed);
+  }
+
+  async function loadStories(feed) {
+    const { data, error } = await supabase
+      .from("submissions")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error loading stories:", error);
+      return;
+    }
+
+    data.forEach((entry) => {
       const div = document.createElement("div");
       div.className = "content-box";
-      div.textContent = s.text;
+      div.textContent = entry.text;
       feed.appendChild(div);
     });
   }
-  document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("submissionForm");
-  const response = document.getElementById("response");
-
-  // Handle form submit
-  if (form) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const storyText = document.getElementById("story").value.trim();
-      if (!storyText) {
-        response.textContent = "Please write something first.";
-        return;
-      }
-
-      // Save to localStorage
-      const submissions = JSON.parse(localStorage.getItem("greylit_stories") || "[]");
-      submissions.push({ text: storyText, date: new Date().toISOString() });
-      localStorage.setItem("greylit_stories", JSON.stringify(submissions));
-
-      response.textContent = "Submitted. Thank you for your truth.";
-      form.reset();
-    });
-  }
-
-  // Render submissions on homepage
-  const feed = document.getElementById("story-feed");
-  if (feed) {
-    const submissions = JSON.parse(localStorage.getItem("greylit_stories") || "[]").reverse();
-    if (submissions.length === 0) {
-      feed.innerHTML += `<p class="tagline">No stories yet. Be the first to share.</p>`;
-    } else {
-      submissions.forEach((s) => {
-        const box = document.createElement("div");
-        box.className = "content-box";
-        box.textContent = s.text;
-        feed.appendChild(box);
-      });
-    }
-  }
 });
-
