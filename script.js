@@ -12,17 +12,38 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
       const storyText = document.getElementById("story").value.trim();
+      const imageFile = document.getElementById("image").files[0]; // Get the uploaded image
 
-      if (!storyText) {
-        response.textContent = "Please write something first.";
+      if (!storyText && !imageFile) {
+        response.textContent = "Please write something or upload an image first.";
         return;
       }
 
-      console.log("Submitting:", storyText);
+      let imageUrl = null;
 
+      // If an image is selected, upload it to Supabase Storage
+      if (imageFile) {
+        const { data, error: uploadError } = await client.storage
+          .from("images") // Using the 'images' bucket in Supabase Storage
+          .upload(`public/${imageFile.name}`, imageFile, {
+            cacheControl: "3600", // Cache the image for 1 hour
+            upsert: true, // Allows overwriting if the file already exists
+          });
+
+        if (uploadError) {
+          console.error("Error uploading image:", uploadError);
+          response.textContent = "Something went wrong with the image upload.";
+          return;
+        }
+
+        // Get the URL of the uploaded image
+        imageUrl = `${SUPABASE_URL}/storage/v1/object/public/images/${data.path}`;
+      }
+
+      // Insert both text and image URL into the database
       const { error } = await client
         .from("submissions")
-        .insert([{ text: storyText }]);
+        .insert([{ text: storyText, image_url: imageUrl }]);
 
       if (error) {
         console.error("Error submitting:", error);
@@ -58,8 +79,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const div = document.createElement("div");
         div.className = "content-box";
         div.textContent = entry.text;
+        
+        // If there's an image URL, display the image
+        if (entry.image_url) {
+          const img = document.createElement("img");
+          img.src = entry.image_url;
+          img.alt = "Uploaded Image";
+          img.style.maxWidth = "100%"; // Adjust max width for the image
+          div.appendChild(img);
+        }
+        
         feed.appendChild(div);
       });
     }
   }
 });
+
