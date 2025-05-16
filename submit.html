@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Submit | GREYLIT</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="social-links">
+    <a href="https://www.instagram.com/yourhandle" target="_blank" aria-label="Instagram">
+      <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" />
+    </a>
+    <a href="https://www.tiktok.com/@yourhandle" target="_blank" aria-label="TikTok">
+      <img src="https://cdn-icons-png.flaticon.com/512/3046/3046125.png" alt="TikTok" />
+    </a>
+    <a href="https://yourstorelink.com" target="_blank" aria-label="Store">
+      <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Store" />
+    </a>
+  </div>
+
+  <main class="submit-container">
+    <h1 class="logo-title">Submit Your Story</h1>
+    <form id="submissionForm">
+      <textarea id="story" placeholder="Write something real..." required></textarea>
+      <input type="file" id="image" accept="image/*" />
+      <button type="submit" class="cta-btn">Submit Anonymously</button>
+    </form>
+    <p id="response" class="tagline"></p>
+
+    <a href="index.html" class="return-link">← Return to Home</a>
+  </main>
+</body>
+</html>
