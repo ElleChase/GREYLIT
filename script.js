@@ -33,7 +33,8 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        imageUrl = data.Key ? `https://pzijwvijruzjgmoekjlx.supabase.co/storage/v1/object/public/images/${data.Key}` : null;
+        imageUrl = data.path ? `https://pzijwvijruzjgmoekjlx.supabase.co/storage/v1/object/public/images/${data.path}` : null;
+
       }
 
       // Insert the submission (text and image URL) into the database
