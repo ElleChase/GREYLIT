@@ -14,9 +14,17 @@
     }
     .store-title {
       text-align: center;
-      font-size: 36px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
       letter-spacing: 2px;
-      margin-bottom: 40px;
+      margin-bottom: 10px;
+    }
+    .intro-text {
+      max-width: 600px;
+      margin: 0 auto 40px;
+      font-size: 16px;
+      color: #ccc;
+      text-align: center;
     }
     .product-grid {
       display: grid;
@@ -36,19 +44,23 @@
     .product img {
       width: 100%;
       display: block;
-      transition: opacity 0.4s ease;
     }
     .product .back {
       position: absolute;
       top: 0; left: 0;
       width: 100%;
       opacity: 0;
+      transition: opacity 0.4s ease;
     }
     .product:hover .back {
       opacity: 1;
     }
     .product:hover .front {
       opacity: 0;
+    }
+    .product.no-hover:hover .front,
+    .product.no-hover:hover .back {
+      opacity: 1;
     }
     .info {
       padding: 16px;
@@ -90,17 +102,34 @@
     .modal-content h3 {
       margin-top: 0;
     }
+    .modal-content img {
+      width: 100%;
+      margin-bottom: 16px;
+      border-radius: 4px;
+    }
     .close {
       float: right;
       cursor: pointer;
+      color: #fff;
+    }
+    .return-link {
+      display: block;
+      text-align: center;
+      margin-top: 60px;
+      font-size: 14px;
+      color: #ccc;
+      text-decoration: none;
+    }
+    .return-link:hover {
       color: #fff;
     }
   </style>
 </head>
 <body>
   <h1 class="store-title">GREYLIT COLLECTION</h1>
-  <section class="product-grid">
+  <p class="intro-text">Each piece in this collection is more than fabric—it's a signal, a fragment, a ghostprint of the unseen. Welcome to the intersection of apparel and archive.</p>
 
+  <section class="product-grid">
     <div class="product" onclick="openModal('veil')">
       <img class="front" src="images/HoodieFront2.png" alt="The Veil Hoodie - Front" />
       <img class="back" src="images/HoodieBACK2.png" alt="The Veil Hoodie - Back" />
@@ -110,7 +139,6 @@
         <span>$68.00</span>
       </div>
     </div>
-
     <div class="product" onclick="openModal('notreal')">
       <img class="front" src="images/NOTREAL_front.png" alt="NOTREAL Tee - Front" />
       <img class="back" src="images/NOTREAL.png" alt="NOTREAL Tee - Back" />
@@ -120,7 +148,6 @@
         <span>$32.00</span>
       </div>
     </div>
-
     <div class="product" onclick="openModal('glyph')">
       <img class="front" src="images/WordFront.png" alt="Glyph Tee - Front" />
       <img class="back" src="images/LogoBack.png" alt="Glyph Tee - Back" />
@@ -130,8 +157,7 @@
         <span>$32.00</span>
       </div>
     </div>
-
-    <div class="product" onclick="openModal('joggers')">
+    <div class="product no-hover" onclick="openModal('joggers')">
       <img class="front" src="images/LogoPants.png" alt="Signal Joggers" />
       <div class="info">
         <h3>Signal Joggers</h3>
@@ -139,8 +165,7 @@
         <span>$48.00</span>
       </div>
     </div>
-
-    <div class="product" onclick="openModal('socks')">
+    <div class="product no-hover" onclick="openModal('socks')">
       <img class="front" src="images/LogoSocks.png" alt="Transmission Socks" />
       <div class="info">
         <h3>Transmission Socks</h3>
@@ -148,12 +173,14 @@
         <span>$14.00</span>
       </div>
     </div>
-
   </section>
+
+  <a href="index.html" class="return-link">← Return to Submission Page</a>
 
   <div id="modal" class="modal" onclick="closeModal(event)">
     <div class="modal-content" id="modal-content">
       <span class="close" onclick="closeModal(event)">&times;</span>
+      <img id="modal-image" src="" alt="" />
       <h3 id="modal-title"></h3>
       <p id="modal-description"></p>
       <p id="modal-price"></p>
@@ -164,28 +191,33 @@
     const data = {
       veil: {
         title: "The Veil Hoodie",
-        description: "Front: GREYLIT mark. Back: 'THE VEIL NEVER LIFTED. I JUST LEARNED HOW TO SEE IN THE DARK.'"
-        , price: "$68.00"
+        description: "Front: GREYLIT mark. Back: 'THE VEIL NEVER LIFTED. I JUST LEARNED HOW TO SEE IN THE DARK.'",
+        price: "$68.00",
+        image: "images/HoodieFront2.png"
       },
       notreal: {
         title: "NOTREAL Tee",
         description: "Front: Minimal logo. Back: 'LOOKED TOO HARD AND NOW NOTHING FEELS REAL.'",
-        price: "$32.00"
+        price: "$32.00",
+        image: "images/NOTREAL_front.png"
       },
       glyph: {
         title: "Glyph Tee",
         description: "Front: GREYLIT wordmark. Back: Large glyph logo.",
-        price: "$32.00"
+        price: "$32.00",
+        image: "images/WordFront.png"
       },
       joggers: {
         title: "Signal Joggers",
         description: "Tapered leg joggers with triangle glyph at hip.",
-        price: "$48.00"
+        price: "$48.00",
+        image: "images/LogoPants.png"
       },
       socks: {
         title: "Transmission Socks",
         description: "Black crew socks with subtle glyph on cuff.",
-        price: "$14.00"
+        price: "$14.00",
+        image: "images/LogoSocks.png"
       }
     };
 
@@ -193,6 +225,7 @@
       document.getElementById('modal-title').innerText = data[key].title;
       document.getElementById('modal-description').innerText = data[key].description;
       document.getElementById('modal-price').innerText = data[key].price;
+      document.getElementById('modal-image').src = data[key].image;
       document.getElementById('modal').style.display = 'flex';
     }
 
