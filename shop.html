@@ -6,12 +6,18 @@
   <title>GREYLIT Store</title>
   <link rel="stylesheet" href="style.css" />
   <style>
-    body {
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
       background: #000;
       color: #fff;
       font-family: 'Space Grotesk', sans-serif;
-      padding: 60px 20px;
-      margin: 0;
+      height: auto;
+      overflow-x: hidden;
     }
 
     .store-title {
@@ -19,7 +25,7 @@
       font-family: 'Bebas Neue', sans-serif;
       font-size: 48px;
       letter-spacing: 2px;
-      margin-bottom: 10px;
+      margin: 40px 0 10px;
     }
 
     .intro-text {
@@ -30,22 +36,20 @@
       text-align: center;
     }
 
-    .cart-icon {
+    .floating-cart {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      font-size: 20px;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
       background: #111;
-      border: 1px solid #444;
-      border-radius: 50%;
-      width: 44px;
-      height: 44px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
       color: #fff;
+      padding: 12px 20px;
+      border-radius: 30px;
+      border: 1px solid #444;
       text-decoration: none;
+      z-index: 1000;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      font-size: 14px;
     }
 
     .product-grid {
@@ -54,6 +58,7 @@
       gap: 30px;
       max-width: 1200px;
       margin: 0 auto;
+      padding: 0 20px 80px;
     }
 
     .product {
@@ -91,15 +96,12 @@
         display: block;
         opacity: 1;
       }
-
       .product .back {
         display: none;
       }
-
       .product.active .back {
         display: block;
       }
-
       .product.active .front {
         display: none;
       }
@@ -137,6 +139,7 @@
       background: rgba(0, 0, 0, 0.9);
       justify-content: center;
       align-items: center;
+      overflow-y: auto;
     }
 
     .modal-content {
@@ -148,7 +151,8 @@
       color: #fff;
       position: relative;
       text-align: center;
-      animation: fadeIn 0.4s ease;
+      animation: fadeIn 0.3s ease;
+      margin: 40px 0;
     }
 
     @keyframes fadeIn {
@@ -174,7 +178,7 @@
     .size-selector {
       display: flex;
       justify-content: center;
-      gap: 10px;
+      gap: 8px;
       margin: 10px 0 20px;
       flex-wrap: wrap;
     }
@@ -187,30 +191,33 @@
       background: #222;
       color: #fff;
       border: 1px solid #555;
-      padding: 6px 12px;
+      padding: 10px 14px;
       border-radius: 50%;
       cursor: pointer;
       font-size: 14px;
+      transition: 0.2s ease;
     }
 
     .size-selector input:checked + label {
       background: #fff;
       color: #000;
+      font-weight: bold;
     }
 
     .add-btn {
       background: #fff;
       color: #000;
       border: none;
-      padding: 10px 20px;
+      padding: 10px 24px;
       font-weight: bold;
-      border-radius: 20px;
+      border-radius: 30px;
       cursor: pointer;
+      font-size: 14px;
     }
 
     .toast {
       position: fixed;
-      bottom: 20px;
+      bottom: 90px;
       left: 50%;
       transform: translateX(-50%);
       background: #111;
@@ -219,15 +226,29 @@
       border-radius: 8px;
       display: none;
       z-index: 999;
+      font-size: 14px;
+    }
+
+    .return-link {
+      display: block;
+      text-align: center;
+      margin: 60px auto;
+      font-size: 14px;
+      color: #ccc;
+      text-decoration: none;
+    }
+
+    .return-link:hover {
+      color: #fff;
     }
   </style>
 </head>
 <body>
 
-<a href="cart.html" class="cart-icon">🛒</a>
+<a href="cart.html" class="floating-cart">🛒 View Cart</a>
 
 <h1 class="store-title">GREYLIT COLLECTION</h1>
-<p class="intro-text">Each piece in this collection is more than fabric—it's a signal, a fragment, a ghostprint of the unseen. Welcome to the intersection of apparel and archive.</p>
+<p class="intro-text">Each piece in this collection is more than fabric—it's a signal, a fragment, a ghostprint of the unseen.</p>
 
 <section class="product-grid" id="product-grid"></section>
 
@@ -238,14 +259,14 @@
     <img id="modal-back" src="" alt="" style="margin-top: 10px;">
     <h3 id="modal-title"></h3>
     <p id="modal-price"></p>
-
     <div class="size-selector" id="modal-sizes"></div>
-
     <button class="add-btn" onclick="addToCart()">+ Add to Cart</button>
   </div>
 </div>
 
 <div class="toast" id="toast">Added to cart. <a href="cart.html" style="color:#ccc;text-decoration:underline;">View Cart</a></div>
+
+<a href="index.html" class="return-link">← Return to Archive</a>
 
 <script>
   const products = [
@@ -338,7 +359,7 @@
 
   function closeModal() {
     modal.style.display = 'none';
-    document.body.style.overflow = '';
+    document.body.style.overflow = 'auto';
   }
 
   function addToCart() {
