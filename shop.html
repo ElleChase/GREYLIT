@@ -62,6 +62,12 @@
         opacity: 0;
       }
     }
+    @media (hover: none) {
+      .product .front, .product .back {
+        position: relative;
+        display: block;
+      }
+    }
     .product.no-hover .front,
     .product.no-hover .back {
       position: relative;
@@ -135,7 +141,7 @@
   <p class="intro-text">Each piece in this collection is more than fabric—it's a signal, a fragment, a ghostprint of the unseen. Welcome to the intersection of apparel and archive.</p>
 
   <section class="product-grid">
-    <div class="product" onclick="openModal('veil')">
+    <div class="product" onclick="toggleImage(this); openModal('veil')">
       <img class="front" src="images/HoodieFront2.png" alt="The Veil Hoodie - Front" />
       <img class="back" src="images/HoodieBACK2.png" alt="The Veil Hoodie - Back" />
       <div class="info">
@@ -144,7 +150,7 @@
         <span>$68.00</span>
       </div>
     </div>
-    <div class="product" onclick="openModal('notreal')">
+    <div class="product" onclick="toggleImage(this); openModal('notreal')">
       <img class="front" src="images/NOTREAL_front.png" alt="NOTREAL Tee - Front" />
       <img class="back" src="images/NOTREAL.png" alt="NOTREAL Tee - Back" />
       <div class="info">
@@ -153,7 +159,7 @@
         <span>$32.00</span>
       </div>
     </div>
-    <div class="product" onclick="openModal('glyph')">
+    <div class="product" onclick="toggleImage(this); openModal('glyph')">
       <img class="front" src="images/WordFront.png" alt="Glyph Tee - Front" />
       <img class="back" src="images/LogoBack.png" alt="Glyph Tee - Back" />
       <div class="info">
@@ -237,6 +243,16 @@
     function closeModal(event) {
       if (event.target.id === 'modal' || event.target.className === 'close') {
         document.getElementById('modal').style.display = 'none';
+      }
+    }
+
+    function toggleImage(container) {
+      if (window.matchMedia('(hover: none)').matches) {
+        const front = container.querySelector('.front');
+        const back = container.querySelector('.back');
+        const isFrontVisible = window.getComputedStyle(front).opacity !== '0';
+        front.style.opacity = isFrontVisible ? '0' : '1';
+        back.style.opacity = isFrontVisible ? '1' : '0';
       }
     }
   </script>
