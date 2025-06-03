@@ -39,7 +39,6 @@
       overflow: hidden;
       position: relative;
       text-align: left;
-      cursor: pointer;
     }
     .product img {
       width: 100%;
@@ -51,21 +50,22 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: auto;
       opacity: 0;
     }
     @media (hover: hover) {
-      .product:hover .back {
+      .product:hover .back { opacity: 1; }
+      .product:hover .front { opacity: 0; }
+    }
+    @media (hover: none) {
+      .product .front,
+      .product .back {
+        position: relative;
+        display: block;
         opacity: 1;
       }
-      .product:hover .front {
-        opacity: 0;
+      .product .back {
+        margin-top: -4px;
       }
-    }
-    .product.no-hover .front,
-    .product.no-hover .back {
-      position: relative;
-      opacity: 1 !important;
     }
     .info {
       padding: 16px;
@@ -84,38 +84,16 @@
       font-weight: bold;
       font-size: 16px;
     }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: #111;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 400px;
+    .add-to-cart {
+      margin-top: 8px;
+      display: inline-block;
+      background: #222;
       color: #fff;
-      text-align: left;
-    }
-    .modal-content h3 {
-      margin-top: 0;
-    }
-    .modal-content img {
-      width: 100%;
-      margin-bottom: 16px;
+      border: 1px solid #555;
+      padding: 6px 16px;
+      font-size: 14px;
       border-radius: 4px;
-    }
-    .close {
-      float: right;
       cursor: pointer;
-      color: #fff;
     }
     .return-link {
       display: block;
@@ -128,116 +106,148 @@
     .return-link:hover {
       color: #fff;
     }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.85);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #111;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 90vw;
+      text-align: center;
+    }
+    .modal-content img {
+      max-width: 100%;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+    .modal-close {
+      color: #fff;
+      font-size: 24px;
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
   <h1 class="store-title">GREYLIT COLLECTION</h1>
   <p class="intro-text">Each piece in this collection is more than fabric—it's a signal, a fragment, a ghostprint of the unseen. Welcome to the intersection of apparel and archive.</p>
 
-  <section class="product-grid">
-    <div class="product" onclick="openModal('veil')">
-      <img class="front" src="images/HoodieFront2.png" alt="The Veil Hoodie - Front" />
-      <img class="back" src="images/HoodieBACK2.png" alt="The Veil Hoodie - Back" />
-      <div class="info">
-        <h3>The Veil Hoodie</h3>
-        <p>Familiar warmth. Quiet defiance. Read between the threads.</p>
-        <span>$68.00</span>
-      </div>
-    </div>
-    <div class="product" onclick="openModal('notreal')">
-      <img class="front" src="images/NOTREAL_front.png" alt="NOTREAL Tee - Front" />
-      <img class="back" src="images/NOTREAL.png" alt="NOTREAL Tee - Back" />
-      <div class="info">
-        <h3>NOTREAL Tee</h3>
-        <p>Reality bends, perception fractures. Wear the dissonance.</p>
-        <span>$32.00</span>
-      </div>
-    </div>
-    <div class="product" onclick="openModal('glyph')">
-      <img class="front" src="images/WordFront.png" alt="Glyph Tee - Front" />
-      <img class="back" src="images/LogoBack.png" alt="Glyph Tee - Back" />
-      <div class="info">
-        <h3>Glyph Tee</h3>
-        <p>The GREYLIT mark. Minimal signal. Maximum resonance.</p>
-        <span>$32.00</span>
-      </div>
-    </div>
-    <div class="product no-hover" onclick="openModal('joggers')">
-      <img class="front" src="images/LogoPants.png" alt="Signal Joggers" />
-      <div class="info">
-        <h3>Signal Joggers</h3>
-        <p>Stay ready. Soft armor with a sharp edge.</p>
-        <span>$48.00</span>
-      </div>
-    </div>
-    <div class="product no-hover" onclick="openModal('socks')">
-      <img class="front" src="images/LogoSocks.png" alt="Transmission Socks" />
-      <div class="info">
-        <h3>Transmission Socks</h3>
-        <p>Hidden messages. Grounded energy.</p>
-        <span>$14.00</span>
-      </div>
-    </div>
-  </section>
+  <section class="product-grid" id="product-grid"></section>
 
   <a href="index.html" class="return-link">← Return to Submission Page</a>
 
-  <div id="modal" class="modal" onclick="closeModal(event)">
+  <div class="modal" id="modal">
     <div class="modal-content" id="modal-content">
-      <span class="close" onclick="closeModal(event)">&times;</span>
-      <img id="modal-image" src="" alt="" />
-      <h3 id="modal-title"></h3>
-      <p id="modal-description"></p>
-      <p id="modal-price"></p>
+      <span class="modal-close" onclick="closeModal()">×</span>
+      <img id="modal-front" src="" alt="Front" />
+      <img id="modal-back" src="" alt="Back" />
     </div>
   </div>
 
   <script>
-    const data = {
-      veil: {
+    const products = [
+      {
+        key: "veil",
         title: "The Veil Hoodie",
-        description: "Front: GREYLIT mark. Back: 'THE VEIL NEVER LIFTED. I JUST LEARNED HOW TO SEE IN THE DARK.'",
+        desc: "Familiar warmth. Quiet defiance. Read between the threads.",
         price: "$68.00",
-        image: "images/HoodieFront2.png"
+        front: "images/HoodieFront2.png",
+        back: "images/HoodieBACK2.png"
       },
-      notreal: {
+      {
+        key: "notreal",
         title: "NOTREAL Tee",
-        description: "Front: Minimal logo. Back: 'LOOKED TOO HARD AND NOW NOTHING FEELS REAL.'",
+        desc: "Reality bends, perception fractures. Wear the dissonance.",
         price: "$32.00",
-        image: "images/NOTREAL_front.png"
+        front: "images/NOTREAL_front.png",
+        back: "images/NOTREAL.png"
       },
-      glyph: {
+      {
+        key: "glyph",
         title: "Glyph Tee",
-        description: "Front: GREYLIT wordmark. Back: Large glyph logo.",
+        desc: "The GREYLIT mark. Minimal signal. Maximum resonance.",
         price: "$32.00",
-        image: "images/WordFront.png"
+        front: "images/WordFront.png",
+        back: "images/LogoBack.png"
       },
-      joggers: {
+      {
+        key: "joggers",
         title: "Signal Joggers",
-        description: "Tapered leg joggers with triangle glyph at hip.",
+        desc: "Stay ready. Soft armor with a sharp edge.",
         price: "$48.00",
-        image: "images/LogoPants.png"
+        front: "images/LogoPants.png",
+        back: null
       },
-      socks: {
+      {
+        key: "socks",
         title: "Transmission Socks",
-        description: "Black crew socks with subtle glyph on cuff.",
+        desc: "Hidden messages. Grounded energy.",
         price: "$14.00",
-        image: "images/LogoSocks.png"
+        front: "images/LogoSocks.png",
+        back: null
       }
-    };
+    ];
 
-    function openModal(key) {
-      document.getElementById('modal-title').innerText = data[key].title;
-      document.getElementById('modal-description').innerText = data[key].description;
-      document.getElementById('modal-price').innerText = data[key].price;
-      document.getElementById('modal-image').src = data[key].image;
+    const container = document.getElementById("product-grid");
+
+    products.forEach(prod => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.onclick = () => openModal(prod.front, prod.back);
+      div.innerHTML = `
+        <img class="front" src="${prod.front}" alt="${prod.title} - Front" />
+        ${prod.back ? `<img class="back" src="${prod.back}" alt="${prod.title} - Back" />` : ''}
+        <div class="info">
+          <h3>${prod.title}</h3>
+          <p>${prod.desc}</p>
+          <span>${prod.price}</span>
+          <label for="size-${prod.key}" style="font-size: 14px; margin-top: 8px; display: block; color: #aaa;">Size</label>
+          <select id="size-${prod.key}" style="width: 100%; margin-bottom: 8px; background: #222; color: #fff; border: 1px solid #555; padding: 6px; border-radius: 4px;">
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
+            <option value="XL">XL</option>
+            <option value="XXL">XXL</option>
+            <option value="3XL">3XL</option>
+          </select>
+          <button class="add-to-cart" onclick="event.stopPropagation(); addToCart('${prod.key}')">Add to Cart</button>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+
+    function addToCart(key) {
+      const size = document.getElementById(`size-${key}`).value;
+      const cart = JSON.parse(localStorage.getItem("greylit_cart") || "{}");
+      const itemKey = key + '-' + size;
+      cart[itemKey] = (cart[itemKey] || 0) + 1;
+      localStorage.setItem("greylit_cart", JSON.stringify(cart));
+      alert("Added to cart!");
+    }
+
+    function openModal(front, back) {
+      document.getElementById('modal-front').src = front;
+      document.getElementById('modal-back').src = back || '';
+      document.getElementById('modal-back').style.display = back ? 'block' : 'none';
       document.getElementById('modal').style.display = 'flex';
     }
 
-    function closeModal(event) {
-      if (event.target.id === 'modal' || event.target.className === 'close') {
-        document.getElementById('modal').style.display = 'none';
-      }
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
     }
   </script>
 </body>
