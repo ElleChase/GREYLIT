@@ -5,12 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GREYLIT Store</title>
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
     body {
       background: #000;
       color: #fff;
       font-family: 'Space Grotesk', sans-serif;
       padding: 60px 20px;
+      margin: 0;
     }
     .store-title {
       text-align: center;
@@ -26,6 +28,20 @@
       color: #ccc;
       text-align: center;
     }
+    .cart-icon {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+    .cart-icon a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 20px;
+      background: #222;
+      padding: 10px 14px;
+      border-radius: 50%;
+    }
     .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -37,12 +53,11 @@
       background: #111;
       border-radius: 12px;
       overflow: hidden;
+      text-align: center;
       position: relative;
-      text-align: left;
     }
     .product img {
       width: 100%;
-      display: block;
       transition: opacity 0.4s ease;
     }
     .product .back {
@@ -57,14 +72,10 @@
       .product:hover .front { opacity: 0; }
     }
     @media (hover: none) {
-      .product .front,
-      .product .back {
+      .product .front, .product .back {
         position: relative;
         display: block;
         opacity: 1;
-      }
-      .product .back {
-        margin-top: -4px;
       }
     }
     .info {
@@ -72,7 +83,7 @@
     }
     .info h3 {
       font-size: 18px;
-      margin-bottom: 4px;
+      margin: 10px 0 4px;
     }
     .info p {
       font-size: 14px;
@@ -80,83 +91,66 @@
       margin-bottom: 8px;
     }
     .info span {
-      display: block;
       font-weight: bold;
       font-size: 16px;
-    }
-    .add-to-cart {
-      margin-top: 8px;
-      display: inline-block;
-      background: #222;
-      color: #fff;
-      border: 1px solid #555;
-      padding: 6px 16px;
-      font-size: 14px;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .return-link {
       display: block;
-      text-align: center;
-      margin-top: 60px;
-      font-size: 14px;
-      color: #ccc;
-      text-decoration: none;
-    }
-    .return-link:hover {
-      color: #fff;
-    }
-
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 999;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.85);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: #111;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 90vw;
-      text-align: center;
-    }
-    .modal-content img {
-      max-width: 100%;
-      border-radius: 4px;
       margin-bottom: 10px;
     }
-    .modal-close {
-      color: #fff;
-      font-size: 24px;
-      position: absolute;
-      top: 20px;
-      right: 30px;
+    .sizes {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .size-option {
+      border: 1px solid #555;
+      border-radius: 50%;
+      padding: 6px 10px;
       cursor: pointer;
+      font-size: 14px;
+      background: #222;
+      color: #fff;
+      transition: background 0.3s;
+    }
+    .size-option.selected {
+      background: #fff;
+      color: #000;
+    }
+    .add-btn {
+      background: #222;
+      color: #fff;
+      padding: 6px 12px;
+      border: 1px solid #555;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #111;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid #555;
+      display: none;
+      z-index: 999;
     }
   </style>
 </head>
 <body>
+  <div class="cart-icon">
+    <a href="cart.html">🛒</a>
+  </div>
+
   <h1 class="store-title">GREYLIT COLLECTION</h1>
   <p class="intro-text">Each piece in this collection is more than fabric—it's a signal, a fragment, a ghostprint of the unseen. Welcome to the intersection of apparel and archive.</p>
 
   <section class="product-grid" id="product-grid"></section>
 
-  <a href="index.html" class="return-link">← Return to Submission Page</a>
-
-  <div class="modal" id="modal">
-    <div class="modal-content" id="modal-content">
-      <span class="modal-close" onclick="closeModal()">×</span>
-      <img id="modal-front" src="" alt="Front" />
-      <img id="modal-back" src="" alt="Back" />
-    </div>
-  </div>
+  <div id="toast" class="toast">Item added. <a href="cart.html" style="color: #fff; text-decoration: underline;">View Cart</a></div>
 
   <script>
     const products = [
@@ -164,7 +158,7 @@
         key: "veil",
         title: "The Veil Hoodie",
         desc: "Familiar warmth. Quiet defiance. Read between the threads.",
-        price: "$68.00",
+        price: 68.00,
         front: "images/HoodieFront2.png",
         back: "images/HoodieBACK2.png"
       },
@@ -172,7 +166,7 @@
         key: "notreal",
         title: "NOTREAL Tee",
         desc: "Reality bends, perception fractures. Wear the dissonance.",
-        price: "$32.00",
+        price: 32.00,
         front: "images/NOTREAL_front.png",
         back: "images/NOTREAL.png"
       },
@@ -180,7 +174,7 @@
         key: "glyph",
         title: "Glyph Tee",
         desc: "The GREYLIT mark. Minimal signal. Maximum resonance.",
-        price: "$32.00",
+        price: 32.00,
         front: "images/WordFront.png",
         back: "images/LogoBack.png"
       },
@@ -188,7 +182,7 @@
         key: "joggers",
         title: "Signal Joggers",
         desc: "Stay ready. Soft armor with a sharp edge.",
-        price: "$48.00",
+        price: 48.00,
         front: "images/LogoPants.png",
         back: null
       },
@@ -196,58 +190,53 @@
         key: "socks",
         title: "Transmission Socks",
         desc: "Hidden messages. Grounded energy.",
-        price: "$14.00",
+        price: 14.00,
         front: "images/LogoSocks.png",
         back: null
       }
     ];
 
+    const sizes = ["S", "M", "L", "XL", "XXL", "3XL"];
     const container = document.getElementById("product-grid");
 
     products.forEach(prod => {
       const div = document.createElement("div");
       div.className = "product";
-      div.onclick = () => openModal(prod.front, prod.back);
+      const sizesHTML = sizes.map(size => `<span class="size-option" onclick="selectSize(this)">${size}</span>`).join('');
       div.innerHTML = `
-        <img class="front" src="${prod.front}" alt="${prod.title} - Front" />
-        ${prod.back ? `<img class="back" src="${prod.back}" alt="${prod.title} - Back" />` : ''}
+        <img class="front" src="${prod.front}" alt="${prod.title} front image" />
+        ${prod.back ? `<img class="back" src="${prod.back}" alt="${prod.title} back image" />` : ''}
         <div class="info">
           <h3>${prod.title}</h3>
           <p>${prod.desc}</p>
-          <span>${prod.price}</span>
-          <label for="size-${prod.key}" style="font-size: 14px; margin-top: 8px; display: block; color: #aaa;">Size</label>
-          <select id="size-${prod.key}" style="width: 100%; margin-bottom: 8px; background: #222; color: #fff; border: 1px solid #555; padding: 6px; border-radius: 4px;">
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
-            <option value="XL">XL</option>
-            <option value="XXL">XXL</option>
-            <option value="3XL">3XL</option>
-          </select>
-          <button class="add-to-cart" onclick="event.stopPropagation(); addToCart('${prod.key}')">Add to Cart</button>
+          <span>$${prod.price.toFixed(2)}</span>
+          <div class="sizes" id="sizes-${prod.key}">${sizesHTML}</div>
+          <button class="add-btn" onclick="addToCart('${prod.key}', ${prod.price})">+ Add to Cart</button>
         </div>
       `;
       container.appendChild(div);
     });
 
-    function addToCart(key) {
-      const size = document.getElementById(`size-${key}`).value;
-      const cart = JSON.parse(localStorage.getItem("greylit_cart") || "{}");
+    function selectSize(elem) {
+      const siblings = elem.parentElement.querySelectorAll('.size-option');
+      siblings.forEach(el => el.classList.remove('selected'));
+      elem.classList.add('selected');
+    }
+
+    function addToCart(key, price) {
+      const sizeContainer = document.getElementById("sizes-" + key);
+      const selected = sizeContainer.querySelector(".selected");
+      if (!selected) return alert("Please select a size.");
+      const size = selected.textContent;
+
+      let cart = JSON.parse(localStorage.getItem("greylit_cart") || "{}");
       const itemKey = key + '-' + size;
       cart[itemKey] = (cart[itemKey] || 0) + 1;
       localStorage.setItem("greylit_cart", JSON.stringify(cart));
-      alert("Added to cart!");
-    }
 
-    function openModal(front, back) {
-      document.getElementById('modal-front').src = front;
-      document.getElementById('modal-back').src = back || '';
-      document.getElementById('modal-back').style.display = back ? 'block' : 'none';
-      document.getElementById('modal').style.display = 'flex';
-    }
-
-    function closeModal() {
-      document.getElementById('modal').style.display = 'none';
+      const toast = document.getElementById("toast");
+      toast.style.display = "block";
+      setTimeout(() => { toast.style.display = "none"; }, 3000);
     }
   </script>
 </body>
