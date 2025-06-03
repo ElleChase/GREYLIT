@@ -135,6 +135,25 @@
     .return-link:hover {
       color: #fff;
     }
+    .form-field {
+      margin: 16px 0;
+    }
+    .form-field label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #ccc;
+    }
+    .form-field select,
+    .form-field input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: none;
+      background: #222;
+      color: #fff;
+      font-family: 'Space Grotesk', sans-serif;
+    }
   </style>
   <script src="https://www.paypal.com/sdk/js?client-id=Ad0ltiCbvnVvD8o1kQZju3GbcvtW6n3O6rY-XpIisAj6CTCcUzkUQAc8x9QCwFTivLfXHOw5D1hK8_nG&currency=USD"></script>
 </head>
@@ -155,6 +174,19 @@
       <h3 id="modal-title"></h3>
       <p id="modal-description"></p>
       <p id="modal-price"></p>
+      <div class="form-field">
+        <label for="size">Size</label>
+        <select id="size">
+          <option value="S">Small</option>
+          <option value="M">Medium</option>
+          <option value="L">Large</option>
+          <option value="XL">X-Large</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="address">Shipping Address</label>
+        <input type="text" id="address" placeholder="123 Main St, City, State, ZIP" />
+      </div>
       <div id="paypal-button-container" style="margin-top: 20px;"></div>
     </div>
   </div>
@@ -215,7 +247,13 @@
             purchase_units: [{
               amount: {
                 value: dataStore[key].price.replace('$', '')
-              }
+              },
+              shipping: {
+                address: {
+                  address_line_1: document.getElementById('address').value || 'TBD'
+                }
+              },
+              custom_id: 'Size: ' + document.getElementById('size').value
             }]
           });
         },
@@ -230,18 +268,6 @@
     function closeModal(event) {
       if (event.target.id === 'modal' || event.target.className === 'close') {
         document.getElementById('modal').style.display = 'none';
-      }
-    }
-
-    function toggleImage(container) {
-      if (window.matchMedia('(hover: none)').matches) {
-        const front = container.querySelector('.front');
-        const back = container.querySelector('.back');
-        if (!front || !back) return;
-
-        const isFrontVisible = front.style.opacity !== '0';
-        front.style.opacity = isFrontVisible ? '0' : '1';
-        back.style.opacity = isFrontVisible ? '1' : '0';
       }
     }
   </script>
