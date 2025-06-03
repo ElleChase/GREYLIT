@@ -1,0 +1,160 @@
+from IPython.display import display, HTML
+
+html_preview = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart | GREYLIT</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 60px 20px;
+      font-family: 'Space Grotesk', sans-serif;
+      background: #000;
+      color: #fff;
+    }
+
+    h1 {
+      text-align: center;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+
+    .cart-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding-bottom: 60px;
+    }
+
+    .cart-item {
+      background: #111;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .cart-item-info {
+      flex: 1;
+      padding-right: 16px;
+    }
+
+    .cart-item-title {
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .cart-item-size {
+      font-size: 14px;
+      color: #aaa;
+    }
+
+    .cart-item-qty {
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .remove-btn {
+      background: #222;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .checkout-btn {
+      display: block;
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 30px;
+      cursor: pointer;
+      margin: 40px auto 0;
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin: 30px 0;
+      font-size: 14px;
+      color: #ccc;
+      text-decoration: none;
+    }
+
+    .back-link:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Your Cart</h1>
+  <div class="cart-container" id="cart-container">
+    <!-- Cart items injected via JS -->
+  </div>
+
+  <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+  <a class="back-link" href="shop.html">← Return to Shop</a>
+
+  <script>
+    const cartData = JSON.parse(localStorage.getItem("greylit_cart") || "{}");
+    const container = document.getElementById("cart-container");
+
+    function renderCart() {
+      container.innerHTML = '';
+      if (Object.keys(cartData).length === 0) {
+        container.innerHTML = '<p>Your cart is empty.</p>';
+        return;
+      }
+
+      Object.entries(cartData).forEach(([key, qty]) => {
+        const [productKey, size] = key.split('-');
+        const product = {
+          veil: "The Veil Hoodie",
+          notreal: "NOTREAL Tee",
+          glyph: "Glyph Tee",
+          joggers: "Signal Joggers",
+          socks: "Transmission Socks"
+        }[productKey] || productKey;
+
+        const div = document.createElement("div");
+        div.className = "cart-item";
+        div.innerHTML = `
+          <div class="cart-item-info">
+            <div class="cart-item-title">${product}</div>
+            <div class="cart-item-size">Size: ${size}</div>
+            <div class="cart-item-qty">Quantity: ${qty}</div>
+          </div>
+          <button class="remove-btn" onclick="removeItem('${key}')">Remove</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function removeItem(key) {
+      delete cartData[key];
+      localStorage.setItem("greylit_cart", JSON.stringify(cartData));
+      renderCart();
+    }
+
+    function checkout() {
+      alert("Checkout functionality coming soon.");
+    }
+
+    renderCart();
+  </script>
+</body>
+</html>
+"""
+
+display(HTML(html_preview))
