@@ -67,12 +67,11 @@
       .product .back {
         position: relative;
         display: block;
+        opacity: 1;
       }
-    }
-    .product.no-hover .front,
-    .product.no-hover .back {
-      position: relative;
-      opacity: 1 !important;
+      .product .back {
+        margin-top: -4px;
+      }
     }
     .info {
       padding: 16px;
@@ -91,56 +90,12 @@
       font-weight: bold;
       font-size: 16px;
     }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.8);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: #111;
-      padding: 20px;
-      border-radius: 8px;
-      max-width: 400px;
-      color: #fff;
-      text-align: left;
-    }
-    .modal-content h3 {
-      margin-top: 0;
-    }
-    .modal-content img {
-      width: 100%;
-      margin-bottom: 16px;
-      border-radius: 4px;
-    }
-    .close {
-      float: right;
-      cursor: pointer;
-      color: #fff;
-    }
-    .return-link {
-      display: block;
-      text-align: center;
-      margin-top: 60px;
-      font-size: 14px;
-      color: #ccc;
-      text-decoration: none;
-    }
-    .return-link:hover {
-      color: #fff;
-    }
     .form-field {
-      margin: 16px 0;
+      margin-top: 10px;
     }
     .form-field label {
       display: block;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       font-size: 14px;
       color: #ccc;
     }
@@ -152,7 +107,9 @@
       border: none;
       background: #222;
       color: #fff;
-      font-family: 'Space Grotesk', sans-serif;
+    }
+    .paypal-button-container {
+      margin-top: 16px;
     }
   </style>
   <script src="https://www.paypal.com/sdk/js?client-id=Ad0ltiCbvnVvD8o1kQZju3GbcvtW6n3O6rY-XpIisAj6CTCcUzkUQAc8x9QCwFTivLfXHOw5D1hK8_nG&currency=USD"></script>
@@ -161,115 +118,53 @@
   <h1 class="store-title">GREYLIT COLLECTION</h1>
   <p class="intro-text">Each piece in this collection is more than fabric—it's a signal, a fragment, a ghostprint of the unseen. Welcome to the intersection of apparel and archive.</p>
 
-  <section class="product-grid">
-    <!-- PRODUCTS OMITTED FOR BREVITY -->
-  </section>
+  <div id="product-details" style="max-width: 400px; margin: 0 auto;">
+    <img src="images/HoodieFront2.png" alt="Product" style="width: 100%; border-radius: 8px;">
+    <div class="info">
+      <h3>The Veil Hoodie</h3>
+      <p>Familiar warmth. Quiet defiance. Read between the threads.</p>
+      <span>$68.00</span>
 
-  <a href="index.html" class="return-link">← Return to Submission Page</a>
-
-  <div id="modal" class="modal" onclick="closeModal(event)">
-    <div class="modal-content" id="modal-content">
-      <span class="close" onclick="closeModal(event)">&times;</span>
-      <img id="modal-image" src="" alt="" />
-      <h3 id="modal-title"></h3>
-      <p id="modal-description"></p>
-      <p id="modal-price"></p>
       <div class="form-field">
         <label for="size">Size</label>
         <select id="size">
           <option value="S">Small</option>
           <option value="M">Medium</option>
           <option value="L">Large</option>
-          <option value="XL">X-Large</option>
+          <option value="XL">XL</option>
         </select>
       </div>
       <div class="form-field">
         <label for="address">Shipping Address</label>
-        <input type="text" id="address" placeholder="123 Main St, City, State, ZIP" />
+        <input type="text" id="address" placeholder="123 Example St, City, State">
       </div>
-      <div id="paypal-button-container" style="margin-top: 20px;"></div>
+      <div class="paypal-button-container" id="paypal-button-container"></div>
     </div>
   </div>
 
   <script>
-    const dataStore = {
-      veil: {
-        title: "The Veil Hoodie",
-        description: "Front: GREYLIT mark. Back: 'THE VEIL NEVER LIFTED. I JUST LEARNED HOW TO SEE IN THE DARK.'",
-        price: "$68.00",
-        image: "images/HoodieFront2.png"
+    paypal.Buttons({
+      style: {
+        layout: 'horizontal',
+        color: 'black',
+        shape: 'pill',
+        label: 'pay'
       },
-      notreal: {
-        title: "NOTREAL Tee",
-        description: "Front: Minimal logo. Back: 'LOOKED TOO HARD AND NOW NOTHING FEELS REAL.'",
-        price: "$32.00",
-        image: "images/NOTREAL_front.png"
+      createOrder: function(data, actions) {
+        return actions.order.create({
+          purchase_units: [{
+            amount: {
+              value: '68.00'
+            }
+          }]
+        });
       },
-      glyph: {
-        title: "Glyph Tee",
-        description: "Front: GREYLIT wordmark. Back: Large glyph logo.",
-        price: "$32.00",
-        image: "images/WordFront.png"
-      },
-      joggers: {
-        title: "Signal Joggers",
-        description: "Tapered leg joggers with triangle glyph at hip.",
-        price: "$48.00",
-        image: "images/LogoPants.png"
-      },
-      socks: {
-        title: "Transmission Socks",
-        description: "Black crew socks with subtle glyph on cuff.",
-        price: "$14.00",
-        image: "images/LogoSocks.png"
+      onApprove: function(data, actions) {
+        return actions.order.capture().then(function(details) {
+          alert('Transaction completed by ' + details.payer.name.given_name);
+        });
       }
-    };
-
-    function openModal(key) {
-      document.getElementById('modal-title').innerText = dataStore[key].title;
-      document.getElementById('modal-description').innerText = dataStore[key].description;
-      document.getElementById('modal-price').innerText = dataStore[key].price;
-      document.getElementById('modal-image').src = dataStore[key].image;
-      document.getElementById('modal').style.display = 'flex';
-
-      const container = document.getElementById('paypal-button-container');
-      container.innerHTML = '';
-
-      paypal.Buttons({
-        style: {
-          layout: 'vertical',
-          color: 'black',
-          shape: 'pill',
-          label: 'buynow'
-        },
-        createOrder: function(data, actions) {
-          return actions.order.create({
-            purchase_units: [{
-              amount: {
-                value: dataStore[key].price.replace('$', '')
-              },
-              shipping: {
-                address: {
-                  address_line_1: document.getElementById('address').value || 'TBD'
-                }
-              },
-              custom_id: 'Size: ' + document.getElementById('size').value
-            }]
-          });
-        },
-        onApprove: function(data, actions) {
-          return actions.order.capture().then(function(details) {
-            alert('Transaction completed by ' + details.payer.name.given_name);
-          });
-        }
-      }).render('#paypal-button-container');
-    }
-
-    function closeModal(event) {
-      if (event.target.id === 'modal' || event.target.className === 'close') {
-        document.getElementById('modal').style.display = 'none';
-      }
-    }
+    }).render('#paypal-button-container');
   </script>
 </body>
 </html>
