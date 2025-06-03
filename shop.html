@@ -44,23 +44,28 @@
     .product img {
       width: 100%;
       display: block;
+      transition: opacity 0.4s ease;
     }
     .product .back {
       position: absolute;
-      top: 0; left: 0;
+      top: 0;
+      left: 0;
       width: 100%;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
-    .product:hover .back {
-      opacity: 1;
-    }
-    .product:hover .front {
+      height: auto;
       opacity: 0;
     }
-    .product.no-hover:hover .front,
-    .product.no-hover:hover .back {
-      opacity: 1;
+    @media (hover: hover) {
+      .product:hover .back {
+        opacity: 1;
+      }
+      .product:hover .front {
+        opacity: 0;
+      }
+    }
+    .product.no-hover .front,
+    .product.no-hover .back {
+      position: relative;
+      opacity: 1 !important;
     }
     .info {
       padding: 16px;
