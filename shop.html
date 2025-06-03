@@ -63,7 +63,8 @@
       }
     }
     @media (hover: none) {
-      .product .front, .product .back {
+      .product .front,
+      .product .back {
         position: relative;
         display: block;
       }
@@ -250,7 +251,9 @@
       if (window.matchMedia('(hover: none)').matches) {
         const front = container.querySelector('.front');
         const back = container.querySelector('.back');
-        const isFrontVisible = window.getComputedStyle(front).opacity !== '0';
+        if (!front || !back) return;
+
+        const isFrontVisible = front.style.opacity !== '0';
         front.style.opacity = isFrontVisible ? '0' : '1';
         back.style.opacity = isFrontVisible ? '1' : '0';
       }
