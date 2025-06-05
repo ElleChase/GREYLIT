@@ -22,6 +22,9 @@
       border-radius: 12px;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
       text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     .checkout-title {
@@ -54,6 +57,11 @@
       text-align: left;
     }
 
+    form {
+      width: 100%;
+      max-width: 500px;
+    }
+
     input {
       width: 100%;
       padding: 0.75rem;
@@ -75,11 +83,6 @@
       border-radius: 8px !important;
       border: none !important;
       overflow: hidden;
-    }
-
-    .paypal-buttons div:nth-child(2),
-    .paypal-buttons div:nth-child(3) {
-      display: none !important;
     }
 
     .nav-links {
@@ -166,6 +169,14 @@
     const form = document.getElementById('checkout-form');
 
     paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        color: 'black',
+        shape: 'pill',
+        label: 'paypal',
+        tagline: false
+      },
+      fundingSource: paypal.FUNDING.PAYPAL,
       createOrder: (data, actions) => {
         return actions.order.create({
           purchase_units: [{
