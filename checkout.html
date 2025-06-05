@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout | GREYLIT</title>
+  <link rel="stylesheet" href="style.css" /> <!-- Your shared styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <script src="https://www.paypal.com/sdk/js?client-id=AYtrBYBMPeLYFmkqK43kf3525BZmCJahIxw81ceKKMNy4GcFqCeXYnsfiJAvaSciQ36fCiFf2sZ2IiYj&currency=USD"></script>
+  <style>
+    body {
+      background-color: #0f0f0f;
+      color: #f0f0f0;
+      font-family: 'Space Grotesk', sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1, h2 {
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    form {
+      max-width: 600px;
+      margin-top: 2rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border: none;
+      background: #1a1a1a;
+      color: #f0f0f0;
+      border-radius: 4px;
+    }
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.25rem;
+      font-weight: 500;
+    }
+    #cart-summary ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 2rem;
+    }
+    #cart-summary li {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    #cart-summary img {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-right: 1rem;
+    }
+    #paypal-button-container {
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Checkout</h1>
+
+  <div id="cart-summary">
+    <h2>Order Summary</h2>
+    <ul id="cart-items"></ul>
+    <strong id="cart-total"></strong>
+  </div>
+
+  <form id="checkout-form">
+    <label for="name">Full Name</label>
+    <input type="text" name="name" required placeholder="Jane Doe" />
+
+    <label for="email">Email</label>
+    <input type="email" name="email" required placeholder="you@example.com" />
+
+    <label for="address">Shipping Address</label>
+    <input type="text" name="address" required placeholder="123 Main St, City, State, ZIP" />
+  </form>
+
+  <div id="paypal-button-container"></div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+
+    const supabase = createClient(
+      'https://pzijwvijruzjgmoekjlx.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6aWp3dmlqcnV6amdtb2Vramx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTY2ODUsImV4cCI6MjA2Mjk5MjY4NX0.cJzlLk44FQPaymfmtorU4sju_53W-TPIvHHSWUZK3PI'
+    );
+
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
+
+    const cartList = document.getElementById('cart-items');
+    const cartTotal = document.getElementById('cart-total');
+    cartList.innerHTML = cart.map(item => `
+      <li>
+        <img src="${item.image}" alt="${item.product_key}" />
+        <div>
+          <div><strong>${item.product_key}</strong> (${item.size})</div>
+          <div>Qty: ${item.quantity} — $${item.price}</div>
+        </div>
+      </li>
+    `).join('');
+    cartTotal.textContent = `Total: $${total}`;
+
+    const form = document.getElementById('checkout-form');
+
+    paypal.Buttons({
+      createOrder: (data, actions) => {
+        return actions.order.create({
+          purchase_units: [{
+            amount: { value: total }
+          }]
+        });
+      },
+      onApprove: async (data, actions) => {
+        const order = await actions.order.capture();
+        const formData = new FormData(form);
+
+        const { error } = await supabase.from('orders').insert([{
+          name: formData.get('name'),
+          email: formData.get('email'),
+          address: formData.get('address'),
+          cart,
+          total,
+          paypal_id: order.id
+        }]);
+
+        if (error) {
+          console.error('Supabase error:', error);
+          alert('Error saving order. Please contact support.');
+          return;
+        }
+
+        localStorage.removeItem('cart');
+        window.location.href = 'thankyou.html';
+      }
+    }).render('#paypal-button-container');
+  </script>
+</body>
+</html>
