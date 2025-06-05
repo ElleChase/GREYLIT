@@ -122,61 +122,64 @@
   </div>
 
   <script>
-    const productData = {
-      veil: { title: "The Veil Hoodie", image: "images/HoodieFront2.png" },
-      notreal: { title: "NOTREAL Tee", image: "images/NOTREAL_front.png" },
-      glyph: { title: "Glyph Tee", image: "images/WordFront.png" },
-      joggers: { title: "Signal Joggers", image: "images/LogoPants.png" },
-      socks: { title: "Transmission Socks", image: "images/LogoSocks.png" }
-    };
+  const productData = {
+    veil: { title: "The Veil Hoodie", image: "images/HoodieFront2.png" },
+    notreal: { title: "NOTREAL Tee", image: "images/NOTREAL_front.png" },
+    glyph: { title: "Glyph Tee", image: "images/WordFront.png" },
+    joggers: { title: "Signal Joggers", image: "images/LogoPants.png" },
+    socks: { title: "Transmission Socks", image: "images/LogoSocks.png" }
+  };
 
-    function renderCart() {
-      const cart = JSON.parse(localStorage.getItem("greylit_cart") || "{}");
-      const container = document.getElementById("cart-container");
-      container.innerHTML = "";
+  function renderCart() {
+    const cart = JSON.parse(localStorage.getItem("greylit_cart") || "{}");
+    const container = document.getElementById("cart-container");
+    container.innerHTML = "";
 
-      const keys = Object.keys(cart);
-      if (keys.length === 0) {
-        container.innerHTML = "<p>Your cart is empty.</p>";
-        return;
-      }
-
-      keys.forEach(itemKey => {
-        const [productKey, size] = itemKey.split("-");
-        const item = productData[productKey];
-        const quantity = cart[itemKey];
-
-        if (!item) return;
-
-        const div = document.createElement("div");
-        div.className = "cart-item";
-        div.innerHTML = `
-          <img src="${item.image}" alt="${item.title}" />
-          <div class="cart-details">
-            <h3>${item.title}</h3>
-            <p>Size: ${size}</p>
-            <p>Quantity: ${quantity}</p>
-          </div>
-          <button class="remove-btn" onclick="removeItem('${itemKey}')">Remove</button>
-        `;
-        container.appendChild(div);
-      });
+    const keys = Object.keys(cart);
+    if (keys.length === 0) {
+      container.innerHTML = "<p>Your cart is empty.</p>";
+      return;
     }
 
-    function removeItem(key) {
-      const cart = JSON.parse(localStorage.getItem("greylit_cart") || "{}");
-      delete cart[key];
-      localStorage.setItem("greylit_cart", JSON.stringify(cart));
-      renderCart();
-    }
+    keys.forEach(itemKey => {
+      const [productKey, size] = itemKey.split("-");
+      const item = productData[productKey];
+      const quantity = cart[itemKey];
 
+      if (!item) return;
+
+      const div = document.createElement("div");
+      div.className = "cart-item";
+      div.innerHTML = `
+        <img src="${item.image}" alt="${item.title}" />
+        <div class="cart-details">
+          <h3>${item.title}</h3>
+          <p>Size: ${size}</p>
+          <p>Quantity: ${quantity}</p>
+        </div>
+        <button class="remove-btn" onclick="removeItem('${itemKey}')">Remove</button>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  function removeItem(key) {
+    const cart = JSON.parse(localStorage.getItem("greylit_cart") || "{}");
+    delete cart[key];
+    localStorage.setItem("greylit_cart", JSON.stringify(cart));
+    renderCart();
+  }
+
+  // ✅ Wrap this to ensure button exists before we attach the event
+  document.addEventListener("DOMContentLoaded", () => {
     renderCart();
 
     document.querySelector(".checkout-btn").addEventListener("click", () => {
-  window.location.href = "checkout.html";
-});
+      window.location.href = "checkout.html";
+    });
+  });
+</script>
 
-  </script>
 
 </body>
 </html>
