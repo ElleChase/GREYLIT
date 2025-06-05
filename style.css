@@ -209,11 +209,13 @@ a.inline-link:active {
     bottom: 20px;
     right: 20px;
   }
+}
 
-  body::before {
+/* Ghosted logo watermark */
+body::before {
   content: "";
   background: url('images/logo.png') center center no-repeat;
-  background-size: 600px; /* adjust size to your liking */
+  background-size: 600px;
   opacity: 0.015;
   position: fixed;
   top: 0;
@@ -240,9 +242,11 @@ body {
     transform: scale(1.03);
     opacity: 0.1;
   }
-@media (max-width: 768px) {
-  body::before {
-    background-size: 300px; /* smaller for mobile */
-  }
 }
 
+/* Responsive adjustment for watermark size */
+@media (max-width: 768px) {
+  body::before {
+    background-size: 300px;
+  }
+}
