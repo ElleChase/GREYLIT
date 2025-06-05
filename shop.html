@@ -357,13 +357,18 @@
     price.innerText = prod.price;
 
     sizes.innerHTML = '';
-    ['S', 'M', 'L', 'XL', 'XXL', '3XL'].forEach((size, i) => {
-      const id = `size-${i}`;
-      sizes.innerHTML += `
-        <input type="radio" name="size" id="${id}" value="${size}" ${i === 0 ? 'checked' : ''}>
-        <label for="${id}">${size}</label>
-      `;
-    });
+
+if (prod.key !== "socks") {
+  ['S', 'M', 'L', 'XL', 'XXL', '3XL'].forEach((size, i) => {
+    const id = `size-${i}`;
+    sizes.innerHTML += `
+      <input type="radio" name="size" id="${id}" value="${size}" ${i === 0 ? 'checked' : ''}>
+      <label for="${id}">${size}</label>
+    `;
+  });
+} else {
+  sizes.innerHTML = `<p style="font-size:14px; color:#aaa; margin: 10px 0;">One Size Fits All</p>`;
+}
 
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
