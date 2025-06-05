@@ -238,7 +238,7 @@ body {
   }
   50% {
     transform: scale(1.03);
-    opacity: 0.03;
+    opacity: 0.1;
   }
 @media (max-width: 768px) {
   body::before {
