@@ -4,106 +4,140 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checkout | GREYLIT</title>
-  <link rel="stylesheet" href="style.css" /> <!-- Your shared styles -->
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet" />
   <script src="https://www.paypal.com/sdk/js?client-id=AYtrBYBMPeLYFmkqK43kf3525BZmCJahIxw81ceKKMNy4GcFqCeXYnsfiJAvaSciQ36fCiFf2sZ2IiYj&currency=USD"></script>
   <style>
     body {
-      background-color: #0f0f0f;
+      margin: 0;
+      background: #0b0b0b;
       color: #f0f0f0;
       font-family: 'Space Grotesk', sans-serif;
-      margin: 0;
-      padding: 2rem;
     }
-    h1, h2 {
-      font-weight: 500;
+
+    .checkout-wrapper {
+      max-width: 600px;
+      margin: 4rem auto;
+      padding: 2rem;
+      background-color: #0f0f0f;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+    }
+
+    .checkout-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
       margin-bottom: 1rem;
     }
-    form {
-      max-width: 600px;
-      margin-top: 2rem;
+
+    #cart-summary {
+      margin-bottom: 2rem;
     }
-    input {
-      width: 100%;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      border: none;
-      background: #1a1a1a;
-      color: #f0f0f0;
-      border-radius: 4px;
-    }
-    label {
-      display: block;
-      margin-top: 1rem;
-      margin-bottom: 0.25rem;
-      font-weight: 500;
-    }
+
     #cart-summary ul {
       list-style: none;
       padding: 0;
-      margin-bottom: 2rem;
     }
+
     #cart-summary li {
-      display: flex;
-      align-items: center;
       margin-bottom: 1rem;
+      font-size: 0.95rem;
     }
-    #cart-summary img {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.3rem;
+      font-weight: 500;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      background: #1a1a1a;
+      color: #eee;
+      border: 1px solid #333;
       border-radius: 8px;
-      margin-right: 1rem;
     }
+
     #paypal-button-container {
       margin-top: 2rem;
+    }
+
+    .paypal-buttons {
+      max-width: 100% !important;
+    }
+
+    iframe[title*="PayPal"] {
+      border-radius: 8px !important;
+      border: none !important;
+      overflow: hidden;
+    }
+
+    .paypal-buttons div:nth-child(2),
+    .paypal-buttons div:nth-child(3) {
+      display: none !important;
     }
   </style>
 </head>
 <body>
-  <h1>Checkout</h1>
+  <div class="checkout-wrapper">
+    <h1 class="checkout-title">CHECKOUT</h1>
 
-  <div id="cart-summary">
-    <h2>Order Summary</h2>
-    <ul id="cart-items"></ul>
-    <strong id="cart-total"></strong>
+    <div id="cart-summary">
+      <h2 style="font-size: 1.2rem; font-weight: 500;">Order Summary</h2>
+      <ul id="cart-items"></ul>
+      <strong id="cart-total">Total: $0.00</strong>
+    </div>
+
+    <form id="checkout-form">
+      <label for="name">Full Name</label>
+      <input type="text" name="name" required placeholder="Jane Doe" />
+
+      <label for="email">Email</label>
+      <input type="email" name="email" required placeholder="you@example.com" />
+
+      <label for="address">Shipping Address</label>
+      <input type="text" name="address" required placeholder="123 Main St, City, State, ZIP" />
+    </form>
+
+    <div id="paypal-button-container" class="paypal-buttons"></div>
   </div>
 
-  <form id="checkout-form">
-    <label for="name">Full Name</label>
-    <input type="text" name="name" required placeholder="Jane Doe" />
-
-    <label for="email">Email</label>
-    <input type="email" name="email" required placeholder="you@example.com" />
-
-    <label for="address">Shipping Address</label>
-    <input type="text" name="address" required placeholder="123 Main St, City, State, ZIP" />
-  </form>
-
-  <div id="paypal-button-container"></div>
-
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
     const supabase = createClient(
       'https://pzijwvijruzjgmoekjlx.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6aWp3dmlqcnV6amdtb2Vramx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTY2ODUsImV4cCI6MjA2Mjk5MjY4NX0.cJzlLk44FQPaymfmtorU4sju_53W-TPIvHHSWUZK3PI'
     );
 
-    const cart = JSON.parse(localStorage.getItem('cart')) || [];
-    const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2);
+    const cart = JSON.parse(localStorage.getItem("greylit_cart") || "{}");
+    const items = Object.entries(cart);
+    const total = items.reduce((sum, [key, quantity]) => {
+      const [productKey] = key.split("-");
+      const price = productKey === "veil" ? 60 :
+                    productKey === "notreal" || productKey === "glyph" ? 34 :
+                    productKey === "joggers" ? 48 :
+                    productKey === "socks" ? 14 : 0;
+      return sum + price * quantity;
+    }, 0).toFixed(2);
 
     const cartList = document.getElementById('cart-items');
     const cartTotal = document.getElementById('cart-total');
-    cartList.innerHTML = cart.map(item => `
-      <li>
-        <img src="${item.image}" alt="${item.product_key}" />
-        <div>
-          <div><strong>${item.product_key}</strong> (${item.size})</div>
-          <div>Qty: ${item.quantity} — $${item.price}</div>
-        </div>
-      </li>
-    `).join('');
+    items.forEach(([key, quantity]) => {
+      const [productKey, size] = key.split("-");
+      const nameMap = {
+        veil: "The Veil Hoodie",
+        notreal: "NOTREAL Tee",
+        glyph: "Glyph Tee",
+        joggers: "Signal Joggers",
+        socks: "Transmission Socks"
+      };
+      const title = nameMap[productKey] || productKey;
+      cartList.innerHTML += `<li>${quantity}× ${title} (${size})</li>`;
+    });
     cartTotal.textContent = `Total: $${total}`;
 
     const form = document.getElementById('checkout-form');
@@ -135,7 +169,7 @@
           return;
         }
 
-        localStorage.removeItem('cart');
+        localStorage.removeItem('greylit_cart');
         window.location.href = 'thankyou.html';
       }
     }).render('#paypal-button-container');
