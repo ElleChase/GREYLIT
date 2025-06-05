@@ -240,6 +240,11 @@ body {
     transform: scale(1.03);
     opacity: 0.03;
   }
-}
+@media (max-width: 768px) {
+  body::before {
+    background-size: 300px; /* smaller for mobile */
+  }
+
+
 
 }
