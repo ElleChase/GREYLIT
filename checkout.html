@@ -21,6 +21,7 @@
       background-color: #0f0f0f;
       border-radius: 12px;
       box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+      text-align: center;
     }
 
     .checkout-title {
@@ -50,6 +51,7 @@
       margin-top: 1rem;
       margin-bottom: 0.3rem;
       font-weight: 500;
+      text-align: left;
     }
 
     input {
@@ -79,6 +81,22 @@
     .paypal-buttons div:nth-child(3) {
       display: none !important;
     }
+
+    .nav-links {
+      margin-top: 2rem;
+    }
+
+    .nav-links a {
+      display: inline-block;
+      margin: 0 10px;
+      color: #ccc;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -103,6 +121,11 @@
     </form>
 
     <div id="paypal-button-container" class="paypal-buttons"></div>
+
+    <div class="nav-links">
+      <a href="shop.html">← Continue Shopping</a>
+      <a href="index.html">Return to Archive →</a>
+    </div>
   </div>
 
   <script type="module">
