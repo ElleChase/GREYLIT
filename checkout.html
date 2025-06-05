@@ -71,8 +71,10 @@
       border-radius: 8px;
     }
 
-    #paypal-button-container {
-      margin-top: 2rem;
+    #paypal-button-container,
+    #card-button-container {
+      margin-top: 1.5rem;
+      width: 100%;
     }
 
     .paypal-buttons {
@@ -124,6 +126,7 @@
     </form>
 
     <div id="paypal-button-container" class="paypal-buttons"></div>
+    <div id="card-button-container" class="paypal-buttons"></div>
 
     <div class="nav-links">
       <a href="shop.html">← Continue Shopping</a>
@@ -168,6 +171,26 @@
 
     const form = document.getElementById('checkout-form');
 
+    function handleOrder(order) {
+      const formData = new FormData(form);
+      supabase.from('orders').insert([{
+        name: formData.get('name'),
+        email: formData.get('email'),
+        address: formData.get('address'),
+        cart,
+        total,
+        paypal_id: order.id
+      }]).then(({ error }) => {
+        if (!error) {
+          localStorage.removeItem('greylit_cart');
+          window.location.href = 'thankyou.html';
+        } else {
+          alert('Something went wrong saving your order.');
+          console.error(error);
+        }
+      });
+    }
+
     paypal.Buttons({
       style: {
         layout: 'vertical',
@@ -177,36 +200,32 @@
         tagline: false
       },
       fundingSource: paypal.FUNDING.PAYPAL,
-      createOrder: (data, actions) => {
-        return actions.order.create({
-          purchase_units: [{
-            amount: { value: total }
-          }]
-        });
-      },
+      createOrder: (data, actions) => actions.order.create({
+        purchase_units: [{ amount: { value: total } }]
+      }),
       onApprove: async (data, actions) => {
         const order = await actions.order.capture();
-        const formData = new FormData(form);
-
-        const { error } = await supabase.from('orders').insert([{
-          name: formData.get('name'),
-          email: formData.get('email'),
-          address: formData.get('address'),
-          cart,
-          total,
-          paypal_id: order.id
-        }]);
-
-        if (error) {
-          console.error('Supabase error:', error);
-          alert('Error saving order. Please contact support.');
-          return;
-        }
-
-        localStorage.removeItem('greylit_cart');
-        window.location.href = 'thankyou.html';
+        handleOrder(order);
       }
     }).render('#paypal-button-container');
+
+    paypal.Buttons({
+      style: {
+        layout: 'vertical',
+        color: 'white',
+        shape: 'pill',
+        label: 'pay',
+        tagline: false
+      },
+      fundingSource: paypal.FUNDING.CARD,
+      createOrder: (data, actions) => actions.order.create({
+        purchase_units: [{ amount: { value: total } }]
+      }),
+      onApprove: async (data, actions) => {
+        const order = await actions.order.capture();
+        handleOrder(order);
+      }
+    }).render('#card-button-container');
   </script>
 </body>
 </html>
