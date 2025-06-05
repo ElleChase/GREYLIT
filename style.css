@@ -6,7 +6,6 @@
   box-sizing: border-box;
 }
 
-
 body {
   background: #000 url('https://www.transparenttextures.com/patterns/asfalt-dark.png');
   background-size: cover;
@@ -73,7 +72,7 @@ body {
 .social-links img {
   width: 24px;
   height: 24px;
-  filter: brightness(0) invert(1); /* Makes icons white */
+  filter: brightness(0) invert(1);
   transition: opacity 0.3s ease;
 }
 
@@ -81,29 +80,27 @@ body {
   opacity: 0.6;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .logo-title {
-    font-size: 48px;
-  }
-
-  .tagline {
-    font-size: 16px;
-    margin: 20px 0;
-  }
-
-  .cta-btn {
-    padding: 10px 24px;
-    font-size: 14px;
-  }
-
-  .social-links {
-    flex-direction: row;
-    top: auto;
-    bottom: 20px;
-    right: 20px;
-  }
+/* Feed container */
+.feed-container {
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 0 20px;
+  text-align: left;
 }
+
+.feed-container .content-box {
+  background: #fff;
+  color: #000;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+  font-family: 'Space Grotesk', sans-serif;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Submit form container */
 .submit-container {
   padding: 120px 20px 60px;
   max-width: 600px;
@@ -136,42 +133,13 @@ input[type="file"] {
   font-size: 14px;
   border: none;
 }
-.return-link {
-  display: inline-block;
-  margin-top: 30px;
-  color: #ccc; /* soft gray instead of default blue */
-  font-size: 14px;
-  text-decoration: none; /* removes underline */
-  transition: color 0.3s ease;
-}
 
-.return-link:hover {
-  color: #fff; /* bright white on hover */
-}
-.feed-container {
-  max-width: 800px;
-  margin: 60px auto;
-  padding: 0 20px;
-  text-align: left;
-}
-
-.feed-container .content-box {
-  background: #fff;
-  color: #000;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  font-size: 15px;
-  line-height: 1.5;
-  font-family: 'Space Grotesk', sans-serif;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-}
 /* Hide the default file input */
 #image {
   display: none;
 }
 
-/* Style your custom label to look like a button */
+/* Style custom label as button */
 label[for="image"] {
   display: inline-block;
   padding: 10px 20px;
@@ -180,8 +148,10 @@ label[for="image"] {
   border-radius: 4px;
   cursor: pointer;
   margin-bottom: 1em;
+}
 
-  .inline-link {
+/* Inline link styles */
+.inline-link {
   color: inherit;
   text-decoration: none;
 }
@@ -191,17 +161,52 @@ label[for="image"] {
 }
 
 .inline-link:hover {
-  text-decoration: underline; /* Optional: only show underline on hover */
-  color: #fff; /* Optional: brightens on hover */
+  text-decoration: underline;
+  color: #fff;
 }
 
-  a.inline-link,
+a.inline-link,
 a.inline-link:visited,
 a.inline-link:hover,
 a.inline-link:active {
-  color: #ccc; /* or #fff if you want it brighter */
+  color: #ccc;
   text-decoration: none;
 }
 
+/* Return link */
+.return-link {
+  display: inline-block;
+  margin-top: 30px;
+  color: #ccc;
+  font-size: 14px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
 
+.return-link:hover {
+  color: #fff;
+}
+
+/* Responsive styles */
+@media (max-width: 600px) {
+  .logo-title {
+    font-size: 48px;
+  }
+
+  .tagline {
+    font-size: 16px;
+    margin: 20px 0;
+  }
+
+  .cta-btn {
+    padding: 10px 24px;
+    font-size: 14px;
+  }
+
+  .social-links {
+    flex-direction: row;
+    top: auto;
+    bottom: 20px;
+    right: 20px;
+  }
 }
