@@ -214,9 +214,9 @@ a.inline-link:active {
 /* Ghosted logo watermark */
 body::before {
   content: "";
-  background: url('images/logo.png') center center no-repeat;
+  background: url('images/logo.svg') center center no-repeat;
   background-size: 600px;
-  opacity: 0.015;
+  opacity: 0.03;
   position: fixed;
   top: 0;
   left: 0;
@@ -224,7 +224,7 @@ body::before {
   height: 100%;
   z-index: 0;
   pointer-events: none;
-  animation: ghostPulse 20s ease-in-out infinite;
+  animation: ghostPulse 16s ease-in-out infinite;
 }
 
 body {
