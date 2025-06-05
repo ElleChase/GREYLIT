@@ -216,7 +216,7 @@ body::before {
   content: "";
   background: url('images/logo.svg') center center no-repeat;
   background-size: 600px;
-  opacity: 0.03;
+  opacity: 0.08;
   position: fixed;
   top: 0;
   left: 0;
