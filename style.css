@@ -194,4 +194,13 @@ label[for="image"] {
   color: #fff; /* Optional: brightens on hover */
 }
 
+  a.inline-link,
+a.inline-link:visited,
+a.inline-link:hover,
+a.inline-link:active {
+  color: #ccc; /* or #fff if you want it brighter */
+  text-decoration: none;
+}
+
+
 }
