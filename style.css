@@ -179,4 +179,19 @@ label[for="image"] {
   border-radius: 4px;
   cursor: pointer;
   margin-bottom: 1em;
+
+  .inline-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.inline-link:visited {
+  color: inherit;
+}
+
+.inline-link:hover {
+  text-decoration: underline; /* Optional: only show underline on hover */
+  color: #fff; /* Optional: brightens on hover */
+}
+
 }
