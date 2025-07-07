@@ -53,6 +53,24 @@
   </div>
 </div>
 
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("disclaimerModal");
+    const acceptBtn = document.getElementById("acceptDisclaimer");
+
+    // Show modal only if not accepted before
+    if (!localStorage.getItem("disclaimerAccepted")) {
+      modal.style.display = "flex";
+    }
+
+    acceptBtn.addEventListener("click", function () {
+      localStorage.setItem("disclaimerAccepted", "true");
+      modal.style.display = "none";
+    });
+  });
+</script>
+
+
 
   
 </body>
