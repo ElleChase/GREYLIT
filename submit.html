@@ -15,150 +15,105 @@
     <a href="https://www.tiktok.com/@yourhandle" target="_blank" aria-label="TikTok">
       <img src="https://cdn-icons-png.flaticon.com/512/3046/3046125.png" alt="TikTok" />
     </a>
-<a href="shop.html" aria-label="Apparel Store">
-  <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="24" height="24">
-    <path d="M16.53 3.87a7 7 0 00-9.06 0l-2.46 2.1a1 1 0 00-.34.76v13a1 1 0 001 1h4a1 1 0 001-1v-5a1 1 0 011-1h1a1 1 0 011 1v5a1 1 0 001 1h4a1 1 0 001-1v-13a1 1 0 00-.34-.76l-2.46-2.1z" />
-  </svg>
-</a>
-
-
+    <a href="shop.html" aria-label="Apparel Store">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" width="24" height="24">
+        <path d="M16.53 3.87a7 7 0 00-9.06 0l-2.46 2.1a1 1 0 00-.34.76v13a1 1 0 001 1h4a1 1 0 001-1v-5a1 1 0 011-1h1a1 1 0 011 1v5a1 1 0 001 1h4a1 1 0 001-1v-13a1 1 0 00-.34-.76l-2.46-2.1z" />
+      </svg>
+    </a>
   </div>
 
   <!-- Submit Section -->
   <main class="submit-container">
     <h1 class="logo-title">Submit Your Story</h1>
     <form id="submissionForm">
-     <textarea id="story" placeholder="Write something real..."></textarea>
+      <textarea id="story" placeholder="Write something real..."></textarea>
 
-      
-      <!-- File input -->
       <input type="file" id="image" accept="image/*" />
-      
-      <!-- Custom label for file input -->
-   <label for="image">Choose File</label>
-<div id="imagePreview"></div>
-<button type="submit" class="cta-btn">Submit Anonymously</button>
+      <label for="image">Choose File</label>
 
-      
+      <div id="imagePreview"></div>
+
       <button type="submit" class="cta-btn">Submit Anonymously</button>
     </form>
-    
-    <!-- Response message -->
-    <p id="response" class="tagline"></p>
 
-    <!-- Return to homepage -->
+    <p id="response" class="tagline"></p>
     <a href="index.html" class="return-link">← Return to Home</a>
   </main>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script type="module">
-  // Supabase form submission logic
-  const SUPABASE_URL = "https://pzijwvijruzjgmoekjlx.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6aWp3dmlqcnV6amdtb2Vramx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTY2ODUsImV4cCI6MjA2Mjk5MjY4NX0.cJzlLk44FQPaymfmtorU4sju_53W-TPIvHHSWUZK3PI";
-  const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("submissionForm");
-    const response = document.getElementById("response");
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module">
+    const SUPABASE_URL = "https://pzijwvijruzjgmoekjlx.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6aWp3dmlqcnV6amdtb2Vramx4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc0MTY2ODUsImV4cCI6MjA2Mjk5MjY4NX0.cJzlLk44FQPaymfmtorU4sju_53W-TPIvHHSWUZK3PI";
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    if (form) {
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("submissionForm");
+      const response = document.getElementById("response");
+      const imageInput = document.getElementById("image");
+      const previewContainer = document.getElementById("imagePreview");
 
-        const storyText = document.getElementById("story").value.trim();
-        const imageFile = document.getElementById("image").files[0];
+      // Show image preview
+      if (imageInput && previewContainer) {
+        imageInput.addEventListener("change", () => {
+          const file = imageInput.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width:100%; margin-top:12px; border-radius:8px;">`;
+            };
+            reader.readAsDataURL(file);
+          } else {
+            previewContainer.innerHTML = "";
+          }
+        });
+      }
 
-        if (!storyText && !imageFile) {
-          response.textContent = "Please write something or upload an image.";
-          return;
-        }
+      // Handle form submission
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
 
-        let imageUrl = null;
-        if (imageFile) {
-          const fileName = `${Date.now()}_${imageFile.name}`;
-          const { data, error: uploadError } = await client.storage
-            .from("images")
-            .upload(fileName, imageFile);
+          const storyText = document.getElementById("story").value.trim();
+          const imageFile = imageInput.files[0];
 
-          if (uploadError) {
-            console.error("Error uploading image:", uploadError);
-            response.textContent = "Failed to upload image.";
+          if (!storyText && !imageFile) {
+            response.textContent = "Please write something or upload an image.";
             return;
           }
 
-          imageUrl = data.path
-            ? `https://pzijwvijruzjgmoekjlx.supabase.co/storage/v1/object/public/images/${data.path}`
-            : null;
-        }
+          let imageUrl = null;
+          if (imageFile) {
+            const fileName = `${Date.now()}_${imageFile.name}`;
+            const { data, error: uploadError } = await client.storage
+              .from("images")
+              .upload(fileName, imageFile);
 
-        const { error } = await client
-          .from("submissions")
-          .insert([{ text: storyText, image_url: imageUrl }]);
+            if (uploadError) {
+              console.error("Error uploading image:", uploadError);
+              response.textContent = "Failed to upload image.";
+              return;
+            }
 
-        if (error) {
-          console.error("Error submitting:", error);
-          response.textContent = "Something went wrong. Try again.";
-        } else {
-          response.textContent = "Submitted. Thank you for your truth.";
-          form.reset();
-        }
-      });
-    }
-  const imageInput = document.getElementById("image");
-  const previewContainer = document.getElementById("imagePreview");
-
-  if (imageInput && previewContainer) {
-    imageInput.addEventListener("change", () => {
-      const file = imageInput.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width:100%; margin-top:12px; border-radius:8px;">`;
-        };
-        reader.readAsDataURL(file);
-      } else {
-        previewContainer.innerHTML = "";
-      }
-    });
-  }
-});
-    const feed = document.getElementById("story-feed");
-    if (feed) {
-      loadStories(feed);
-    }
-
-    async function loadStories(feed) {
-      const { data, error } = await client
-        .from("submissions")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Error loading stories:", error);
-        return;
-      }
-
-      if (data.length === 0) {
-        feed.innerHTML += `<p class="tagline">No stories yet. Be the first to share.</p>`;
-      } else {
-        data.forEach((entry) => {
-          const div = document.createElement("div");
-          div.className = "content-box";
-          div.textContent = entry.text;
-
-          if (entry.image_url) {
-            const img = document.createElement("img");
-            img.src = entry.image_url;
-            img.alt = "Uploaded image";
-            img.className = "uploaded-image";
-            div.appendChild(img);
+            imageUrl = data.path
+              ? `https://pzijwvijruzjgmoekjlx.supabase.co/storage/v1/object/public/images/${data.path}`
+              : null;
           }
 
-          feed.appendChild(div);
+          const { error } = await client
+            .from("submissions")
+            .insert([{ text: storyText, image_url: imageUrl }]);
+
+          if (error) {
+            console.error("Error submitting:", error);
+            response.textContent = "Something went wrong. Try again.";
+          } else {
+            response.textContent = "Submitted. Thank you for your truth.";
+            form.reset();
+            previewContainer.innerHTML = "";
+          }
         });
       }
-    }
-  });
-</script>
+    });
+  </script>
 </body>
 </html>
-
