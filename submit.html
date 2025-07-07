@@ -28,13 +28,17 @@
   <main class="submit-container">
     <h1 class="logo-title">Submit Your Story</h1>
     <form id="submissionForm">
-      <textarea id="story" placeholder="Write something real..." required></textarea>
+     <textarea id="story" placeholder="Write something real..."></textarea>
+
       
       <!-- File input -->
       <input type="file" id="image" accept="image/*" />
       
       <!-- Custom label for file input -->
-      <label for="image">Choose File</label>
+   <label for="image">Choose File</label>
+<div id="imagePreview"></div>
+<button type="submit" class="cta-btn">Submit Anonymously</button>
+
       
       <button type="submit" class="cta-btn">Submit Anonymously</button>
     </form>
@@ -99,7 +103,24 @@
         }
       });
     }
+  const imageInput = document.getElementById("image");
+  const previewContainer = document.getElementById("imagePreview");
 
+  if (imageInput && previewContainer) {
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewContainer.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width:100%; margin-top:12px; border-radius:8px;">`;
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewContainer.innerHTML = "";
+      }
+    });
+  }
+});
     const feed = document.getElementById("story-feed");
     if (feed) {
       loadStories(feed);
