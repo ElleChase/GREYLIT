@@ -269,6 +269,26 @@ body {
 }
 
 
+.quote-card img {
+  max-width: 100%;
+  max-height: 250px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+main img {
+  max-width: 100%;
+  max-height: 250px;
+  height: auto;
+  display: block;
+  margin: 0 auto 10px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+
 
 /* Responsive adjustment for watermark size */
 @media (max-width: 768px) {
