@@ -287,6 +287,15 @@ main img {
   border-radius: 8px;
   object-fit: contain;
 }
+.uploaded-image {
+  max-width: 100%;
+  max-height: 300px;
+  height: auto;
+  display: block;
+  margin: 12px auto;
+  border-radius: 8px;
+  object-fit: contain;
+}
 
 
 
