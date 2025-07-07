@@ -23,9 +23,15 @@ document.addEventListener("DOMContentLoaded", () => {
       let imageUrl = null;
       if (imageFile) {
         const fileName = `${Date.now()}_${imageFile.name}`; // Using timestamp to avoid name conflicts
-        const { data, error: uploadError } = await client.storage
-          .from("images") // Make sure you have a bucket named "images"
-          .upload(fileName, imageFile);
+   const { data, error: uploadError } = await client.storage
+  .from("images")
+  .upload(fileName, imageFile, {
+    cacheControl: "3600",
+    upsert: false,
+  });
+
+console.log("UPLOAD RESULT:", data, uploadError);
+
 
         if (uploadError) {
           console.error("Error uploading image:", uploadError);
