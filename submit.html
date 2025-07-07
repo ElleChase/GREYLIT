@@ -9,10 +9,10 @@
 <body>
   <!-- Social Links Section -->
   <div class="social-links">
-    <a href="https://www.instagram.com/yourhandle" target="_blank" aria-label="Instagram">
+    <a href="https://www.instagram.com/greylitarchive" target="_blank" aria-label="Instagram">
       <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" alt="Instagram" />
     </a>
-    <a href="https://www.tiktok.com/@yourhandle" target="_blank" aria-label="TikTok">
+    <a href="https://www.tiktok.com/@greylitarchive" target="_blank" aria-label="TikTok">
       <img src="https://cdn-icons-png.flaticon.com/512/3046/3046125.png" alt="TikTok" />
     </a>
     <a href="shop.html" aria-label="Apparel Store">
@@ -27,15 +27,11 @@
     <h1 class="logo-title">Submit Your Story</h1>
     <form id="submissionForm">
       <textarea id="story" placeholder="Write something real..."></textarea>
-
       <input type="file" id="image" accept="image/*" />
       <label for="image">Choose File</label>
-
       <div id="imagePreview"></div>
-
       <button type="submit" class="cta-btn">Submit Anonymously</button>
     </form>
-
     <p id="response" class="tagline"></p>
     <a href="index.html" class="return-link">← Return to Home</a>
   </main>
@@ -52,7 +48,6 @@
       const imageInput = document.getElementById("image");
       const previewContainer = document.getElementById("imagePreview");
 
-      // Show image preview
       if (imageInput && previewContainer) {
         imageInput.addEventListener("change", () => {
           const file = imageInput.files[0];
@@ -68,7 +63,6 @@
         });
       }
 
-      // Handle form submission
       if (form) {
         form.addEventListener("submit", async (e) => {
           e.preventDefault();
@@ -86,7 +80,10 @@
             const fileName = `${Date.now()}_${imageFile.name}`;
             const { data, error: uploadError } = await client.storage
               .from("images")
-              .upload(fileName, imageFile);
+              .upload(fileName, imageFile, {
+                cacheControl: "3600",
+                upsert: false
+              });
 
             if (uploadError) {
               console.error("Error uploading image:", uploadError);
